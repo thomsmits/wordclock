@@ -15,6 +15,9 @@ static int alarm_minute;
 /** Indicates whether the alarm is on or off. */
 static boolean alarm_on = false;
 
+/* User has stopped alarm */
+boolean stop_alarm = false;
+
 /**
   Increments the alarm time by ALARM_STEPS minutes.
   Wrap-around is handled by this function.
@@ -46,4 +49,13 @@ void alarm_toggel() {
   }
 }
 
+/**
+  Indicates whether the alarm should be played.
+  
+  @return true the alarm sound should not be played
+          any longer.
+  */
+boolean stop_alarm_sound() {
+  return stop_alarm;
+}
 

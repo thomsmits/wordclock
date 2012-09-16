@@ -1,6 +1,8 @@
 /*
   DCF clock functions.
 */
+#include <DCF77.h>
+#define PORT_DCF 3
 
 /** Arduino timestamp at last DCF update */
 static unsigned long millis_at_last_dcf;
@@ -8,6 +10,8 @@ static unsigned long millis_at_last_dcf;
 /** Last DCF time as timestamp */
 static unsigned long dcf_millis;
 
+/** Class to access DCF time from external receiver */
+DCF77 myDCF = DCF77(PORT_DCF);
 
 /**
   Return the internal timestamp at last DCF update.
@@ -31,14 +35,28 @@ unsigned long get_dcf_millis() {
 */
 void acquire_dcf_time() {
 
-  // MOCK !!!!  
-  int hour = 17;
-  int minute = 48;
-  int second = 23;
+   
+  /*
+  int DCFsignal = myDCF.scanSignal();
   
-  time_to_millis(hour, minute, second, &dcf_millis);
+  if (DCFsignal) {
+    //beep();
+    digitalWrite(13, HIGH);
   
-  millis_at_last_dcf = millis();  
+    int hour   = myDCF.hh;
+    int minute = myDCF.mm;
+    int second = myDCF.ss;
+    
+    if (hour != 0 && minute != 0 && second != 0) {
+      time_to_millis(hour, minute, second, &dcf_millis);
+      millis_at_last_dcf = millis();  
+    }
+  }
+  else {
+    Serial.print("No Signal!");
+    digitalWrite(13, LOW);
+  }
+  */
 }
 
 
@@ -68,6 +86,7 @@ void read_current_time(int* hour, int* minute, int* second) {
   
   millis_to_time(currentMillis, hour, minute, second);  
 }
+
 
 
 

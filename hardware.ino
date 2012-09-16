@@ -1,232 +1,85 @@
 /*
-  Functions to map time to hardware registers
-  and display.
+  Functions to handle the hardware of the clock.
 */
 
-#define NUMBER_OF_LEDS 111
-#define BIT_ON_DELAY 1
-#define BIT_OFF_DELAY 1
-#define PORT_CLOCK 11
-#define PORT_SIGNAL 12
-#define PORT_DISPLAY 10
-
-// Position of the LEDs
-const int ES[]      = { 0, 1, -1 };
-const int IST[]     = { 3, 4, 5, -1 };
-const int FUENF_M[] = { 7, 8, 9, 10};
-const int ZEHN_M[]  = { 11, 12, 13, 14, 15, -1 };
-const int ZWANZIG[] = { 15, 16, 17, 18, 19, 20, 21, -1 };
-const int DREIVIERTEL[]  = { 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, -1 };
-const int VIERTEL[] = { 26, 27, 28, 29, 30, 31, 32, -1 };
-const int VOR[]     = { 35, 36, 37, -1 };
-const int NACH[]    = { 38, 39, 40, 41, -1 };
-const int HALB[]    = { 44, 45, 46, 47, -1 };
-const int ZWOELF[]  = { 49, 50, 51, 52, 53, 54, -1 };
-const int ZWEI[]    = { 55, 56, 57, 58, -1 };
-const int EINS[]    = { 57, 58, 59, 60, -1 };
-const int SIEBEN[]  = { 60, 61, 62, 63, 64, 65, -1 };
-const int DREI[]    = { 67, 68, 69, 70, -1 };
-const int FUENF[]   = { 71, 72, 73, 74, -1 };
-const int ELF[]     = { 77, 78, 79, -1 };
-const int NEUN[]    = { 80, 81, 82, 83, -1 };
-const int VIER[]    = { 84, 85, 86, 87, -1 };
-const int ACHT[]    = { 89, 90, 91, 92, -1 };
-const int ZEHN[]    = { 93, 94, 95, 96};
-const int SECHS[]   = { 99, 100, 101, 102, 103, -1 };
-const int UHR[]     = { 105, 106, 107, -1 };
-const int PM[]      = { 109, -1 };
-const int WECKER[]  = { 110, -1 };
-
-/** 
- Sets the bits in resultArray depending on the values of the 
- arrayToAdd. Bits already set in the input array will not
- be set to zero.
- 
- @param arrayToAdd Array containing the bits to be set as 
-        index of the bit. The value 5 for example implies
-        that the 6th bit in the resultArray has to be set to 1.
- 
- @param (out) ledBits Array where the bits will be set according
-        to the input array. 
-*/        
-static void compose(const int arrayToAdd[], int* ledBits) {
-  int pos;
-  int i = 0;
-    
-  while ((pos = arrayToAdd[i++]) != -1) {
-    ledBits[pos] = 1;
-  }
-}
+#define BIT_ON_DELAY 100
+#define BIT_OFF_DELAY 100
 
 
-/**
- Sents the LED bit pattern to the shift registers.
- 
- @param ledBits the bit pattern to be sent
-*/
-void send_to_shift_registers(const int ledBits[]) {
+// serial signal (PIN 2)
+#define PORT_SER_IN 12
 
-  for (int i = 0; i < NUMBER_OF_LEDS; i++) {
-    
-    if (ledBits[i] == 1) {
-      digitalWrite(PORT_SIGNAL, HIGH);
-    }
-    else {
-      digitalWrite(PORT_SIGNAL, LOW);
-    }
-    
-    digitalWrite(PORT_CLOCK, HIGH);
-    delay(BIT_ON_DELAY);
-    digitalWrite(PORT_CLOCK, LOW);
-    delay(BIT_OFF_DELAY);
-    
-  }    
-  
-  digitalWrite(PORT_DISPLAY, HIGH);
-  Serial.print("Output Done");
-}
+// send to output port
+#define PORT_OUTPUT_ENABLE 8
+
+// clear buffer (PIN 7)
+#define PORT_CLEAR 7
+
+// clock for shift register port (PIN 15)
+#define PORT_SRCK 11
+
+// clock for register (PIN 10)
+#define PORT_RCK 10
+
+// enable output (PIN 8)
+#define PORT_OUTPUT_ENABLE 8
 
 
-/**
- Sets the hour information for the clock.
- 
- @param hour the hour to be set
- @param (out) ledBits array to set led bits
-*/
-static void display_hour(const int hour, int ledBits[]) {
-  
-  int hourAMPM = hour;
-  
-  if (hour > 12) {
-    compose(PM, ledBits);
-    hourAMPM -= 12;
-  }
+#define PORT_SPEAKER 9
+#define PORT_BUTTON1 2
 
-  switch (hourAMPM) {
-    
-    case 0: compose(ZWOELF, ledBits);
-        break;
-        
-    case 1: compose(EINS, ledBits);
-        break;
-
-    case 2: compose(ZWEI, ledBits);
-        break;
-        
-    case 3: compose(DREI, ledBits);
-        break;
-        
-    case 4: compose(VIER, ledBits);
-        break;
-        
-    case 5: compose(FUENF, ledBits);
-        break;
-        
-    case 6: compose(SECHS, ledBits);
-        break;
-        
-    case 7: compose(SIEBEN, ledBits);
-        break;
-        
-    case 8: compose(ACHT, ledBits);
-        break;
-        
-    case 9: compose(NEUN, ledBits);
-        break;
-        
-    case 10: compose(ZEHN, ledBits);
-        break;
-        
-    case 11: compose(ELF, ledBits);
-        break;
-        
-    case 12: compose(ZWOELF, ledBits);
-        break;
-  }  
-}
-
-/**
-  Displays hour and minutes on the LED panel.
-  
-  @param hour the hour to be set
-  @param minute the minute to be set
-  @param (out) ledBits bits for the LEDs
-*/
-void display_time(const int hour, const int minute, int ledBits[]) {
- 
-  int roundMinute = (minute / 5) * 5;
-  
-  compose(ES, ledBits);
-  compose(IST, ledBits);
-  
-  int hourToBeSet = hour;
-  
-  switch (roundMinute) {
-    case 0: compose(UHR, ledBits);
-        break;
-    
-    case 5: compose(FUENF_M, ledBits);
-        compose(NACH, ledBits);
-        break;
-        
-    case 10: compose(ZEHN_M, ledBits);
-        compose(NACH, ledBits);
-        break;
-
-    case 15: compose(VIERTEL, ledBits);
-        compose(NACH, ledBits);
-        break;
-
-    case 20: compose(ZWANZIG, ledBits);
-        compose(NACH, ledBits);
-        break;
-
-    case 25: compose(FUENF_M, ledBits);
-        compose(VOR, ledBits);
-        compose(HALB, ledBits);
-        hourToBeSet++;
-        break;
-        
-    case 30: compose(HALB, ledBits);
-        hourToBeSet++;
-        break;
-        
-    case 35: compose(FUENF_M, ledBits);
-        compose(NACH, ledBits);
-        compose(HALB, ledBits);
-        hourToBeSet++;
-        break;
-        
-    case 40: compose(ZWANZIG, ledBits);
-        compose(VOR, ledBits);
-        hourToBeSet++;
-        break;
-        
-    case 45: compose(VIERTEL, ledBits);
-        compose(VOR, ledBits);
-        hourToBeSet++;
-        break;
-        
-    case 50: compose(ZEHN_M, ledBits);
-        compose(VOR, ledBits);
-        hourToBeSet++;
-        break;
-        
-    case 55: compose(FUENF_M, ledBits);
-        compose(VOR, ledBits);
-        hourToBeSet++;
-        break;
-  }
-  
-  display_hour(hourToBeSet, ledBits);
-}
+#define PORT_LED 13
 
 /**
   Initialize hardware.
 */
 void hardware_initialize() {
-  pinMode(PORT_SIGNAL, OUTPUT);
-  pinMode(PORT_CLOCK, OUTPUT);
-  pinMode(PORT_DISPLAY, OUTPUT);
+  pinMode(PORT_SER_IN, OUTPUT);
+  pinMode(PORT_OUTPUT_ENABLE, OUTPUT);
+  pinMode(PORT_CLEAR, OUTPUT);
+  pinMode(PORT_SRCK, OUTPUT);
+  pinMode(PORT_RCK, OUTPUT);
+  pinMode(PORT_SPEAKER, OUTPUT);
+  pinMode(PORT_BUTTON1, INPUT);
+  pinMode(PORT_DCF, INPUT);
+  pinMode(PORT_LED, OUTPUT);
+}
+
+
+/**
+ Sents the given bit patternto the shift registers
+ connected to pin PORT_SIGNAL.
+ 
+ @param ledBits the bit pattern to be sent
+*/
+void send_to_shift_registers(const int bitPattern[]) {
+
+  // don't show changes
+  //digitalWrite(PORT_OUTPUT_ENABLE, HIGH);
+  digitalWrite(PORT_OUTPUT_ENABLE, LOW);
+  digitalWrite(PORT_CLEAR, HIGH);
+  
+  for (int i = 0; i < NUMBER_OF_LEDS; i++) {
+    
+    digitalWrite(PORT_SRCK, HIGH);
+    
+    if (bitPattern[i] == 1) {
+      digitalWrite(PORT_SER_IN, HIGH);
+    }
+    else {
+      digitalWrite(PORT_SER_IN, LOW);
+    }
+    
+    delayMicroseconds(BIT_ON_DELAY);
+    digitalWrite(PORT_SRCK, LOW);
+    delayMicroseconds(BIT_OFF_DELAY);
+  }    
+  
+  digitalWrite(PORT_RCK, HIGH);
+  delayMicroseconds(BIT_ON_DELAY);
+  digitalWrite(PORT_RCK, LOW);
+  delayMicroseconds(BIT_OFF_DELAY);
+  
+  Serial.print("Output Done");
 }
 
