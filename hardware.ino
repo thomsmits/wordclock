@@ -86,10 +86,33 @@ void send_to_shift_registers(const int bitPattern[]) {
  Set the brightness of the clock.
  
  @param value brightness where 255 indicates full
-        brightness, 1 low and 0 off.
+        brightness, 1 lowes possible and 0 off.
 */
 void set_brightness(const int value) {
-    int pwm = 255 - value;
-    analogWrite(PORT_OUTPUT_ENABLE, pwm);
+  int pwm = 255 - value;
+  analogWrite(PORT_OUTPUT_ENABLE, pwm);
 }
 
+
+#define FULL_AMBIENT_LIGHT 0
+#define NO_AMBIENT_LIGHT 700.0
+
+/**
+  Get the ambient brightness (of the room).
+  
+  @return 255 indicates maximum brightness
+  @return 0 indicates complete darkness
+*/
+int get_ambient_brightness() {
+  int value = analogRead(A0);
+  
+  int scaledValue = (double) value / NO_AMBIENT_LIGHT * 255.0;
+ 
+  // ensure that the value does never exceed 255 even if the
+  // analog in port delivers a value greater than NO_AMBIENT_LIGHT
+  if (scaledValue > 255) {
+    scaledValue = 255;
+  }
+  
+  return scaledValue;
+}

@@ -89,8 +89,28 @@ void test_pwm() {
   set_brightness(2);
   delay(1500);
   
-  set_brightness(3);
+  set_brightness(4);
   delay(1500);
+  
+  
+  set_brightness(8);
+  delay(1500);
+  
+  set_brightness(16);
+  delay(1500);
+
+  set_brightness(32);
+  delay(1500);
+
+  set_brightness(64);
+  delay(1500);
+
+  set_brightness(128);
+  delay(1500);
+
+  set_brightness(256);
+  delay(1500);
+
   
   set_brightness(0);
   delay(1500);

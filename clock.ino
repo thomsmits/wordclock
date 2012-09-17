@@ -14,7 +14,10 @@ void setup() {
 */
 void loop(){ 
   
-  test_pwm();
+  //test_pwm();
+  int brightness = get_ambient_brightness();
+  int ledBrightness = max(255 - brightness, 1);
+  set_brightness(ledBrightness);
   //test_play_melody();
   //update();
   //test_display();
