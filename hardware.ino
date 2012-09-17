@@ -2,8 +2,8 @@
   Functions to handle the hardware of the clock.
 */
 
-#define BIT_ON_DELAY 100
-#define BIT_OFF_DELAY 100
+#define BIT_ON_DELAY 1 
+#define BIT_OFF_DELAY 1
 
 
 // serial signal (PIN 2)
@@ -54,14 +54,13 @@ void hardware_initialize() {
 */
 void send_to_shift_registers(const int bitPattern[]) {
 
-  // don't show changes
-  //digitalWrite(PORT_OUTPUT_ENABLE, HIGH);
-  digitalWrite(PORT_OUTPUT_ENABLE, LOW);
+  digitalWrite(PORT_OUTPUT_ENABLE, HIGH);
   digitalWrite(PORT_CLEAR, HIGH);
+  digitalWrite(PORT_SRCK, LOW);
   
   for (int i = 0; i < NUMBER_OF_LEDS; i++) {
     
-    digitalWrite(PORT_SRCK, HIGH);
+    digitalWrite(PORT_SRCK, LOW);
     
     if (bitPattern[i] == 1) {
       digitalWrite(PORT_SER_IN, HIGH);
@@ -70,16 +69,27 @@ void send_to_shift_registers(const int bitPattern[]) {
       digitalWrite(PORT_SER_IN, LOW);
     }
     
-    delayMicroseconds(BIT_ON_DELAY);
-    digitalWrite(PORT_SRCK, LOW);
-    delayMicroseconds(BIT_OFF_DELAY);
+    //delayMicroseconds(BIT_ON_DELAY);
+    digitalWrite(PORT_SRCK, HIGH);
+    //delayMicroseconds(BIT_OFF_DELAY);
   }    
   
   digitalWrite(PORT_RCK, HIGH);
-  delayMicroseconds(BIT_ON_DELAY);
+  //delayMicroseconds(BIT_ON_DELAY);
   digitalWrite(PORT_RCK, LOW);
-  delayMicroseconds(BIT_OFF_DELAY);
+  //delayMicroseconds(BIT_OFF_DELAY);
   
   Serial.print("Output Done");
+}
+
+/**
+ Set the brightness of the clock.
+ 
+ @param value brightness where 255 indicates full
+        brightness, 1 low and 0 off.
+*/
+void set_brightness(const int value) {
+    int pwm = 255 - value;
+    analogWrite(PORT_OUTPUT_ENABLE, pwm);
 }
 

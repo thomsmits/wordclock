@@ -64,15 +64,113 @@ void test_dcf_clock() {
   dbg_output_time(hour, minute, second);
 }
 
+void test_pwm() {
+
+  /*set_brightness(100);
+  delay(1500);
+  
+  set_brightness(75);
+  delay(1500);
+  
+  set_brightness(50);
+  delay(1500);
+  
+  set_brightness(25);
+  delay(1500);
+  
+  set_brightness(5);
+  delay(1500);
+  
+  */
+  
+  set_brightness(1);
+  delay(1500);
+    
+  set_brightness(2);
+  delay(1500);
+  
+  set_brightness(3);
+  delay(1500);
+  
+  set_brightness(0);
+  delay(1500);
+ /*
+  analogWrite(PORT_OUTPUT_ENABLE, 255);
+  delay(1500);
+  
+  analogWrite(PORT_OUTPUT_ENABLE, 254);
+  delay(1500);
+  
+  analogWrite(PORT_OUTPUT_ENABLE, 240);
+  delay(1500);
+
+  analogWrite(PORT_OUTPUT_ENABLE, 190);
+  delay(1500);
+
+  analogWrite(PORT_OUTPUT_ENABLE, 150);
+  delay(1500);
+
+  analogWrite(PORT_OUTPUT_ENABLE, 125);
+  delay(1500);
+
+  analogWrite(PORT_OUTPUT_ENABLE, 100);
+  delay(1500);
+  
+  analogWrite(PORT_OUTPUT_ENABLE, 50);
+  delay(1500);
+  
+  analogWrite(PORT_OUTPUT_ENABLE, 0);
+  delay(1500);
+  
+
+  analogWrite(PORT_OUTPUT_ENABLE, 1);
+  delay(500);
+  analogWrite(PORT_OUTPUT_ENABLE, 0);
+  delay(1500);
+  */
+  
+ 
+
+  
+  //digitalWrite(PORT_OUTPUT_ENABLE, LOW);
+  //digitalWrite(PORT_OUTPUT_ENABLE, HIGH);
+  //delayMicroseconds(del);
+  
+/*
+  del += 1000;
+  
+  
+  for (int i = 0; i < 10; i++) {
+    digitalWrite(PORT_OUTPUT_ENABLE, LOW);
+    delayMicroseconds(del);
+    digitalWrite(PORT_OUTPUT_ENABLE, HIGH);
+    delayMicroseconds(del);
+  }
+  
+  if (del == 1000) {
+    del = 0;
+  }
+*/
+}
+  
 void test_shift_register() {
   int ledBits[NUMBER_OF_LEDS];
   
   ledBits[NUMBER_OF_LEDS - 1] = 1;  
   send_to_shift_registers(ledBits);
-
+  
   ledBits[NUMBER_OF_LEDS - 2] = 1;  
   send_to_shift_registers(ledBits);
-
+  
+  ledBits[NUMBER_OF_LEDS - 3] = 0;  
+  send_to_shift_registers(ledBits);
+ /* 
+  for (int i = 1; i < 10; i++) {
+    ledBits[NUMBER_OF_LEDS - i] = 1;  
+  }
+  send_to_shift_registers(ledBits);
+  */
+/*
   ledBits[NUMBER_OF_LEDS - 3] = 1;  
   send_to_shift_registers(ledBits);
 
@@ -120,5 +218,5 @@ void test_shift_register() {
   
   ledBits[NUMBER_OF_LEDS - 1] = 0;  
   send_to_shift_registers(ledBits);
-
+*/
 }
