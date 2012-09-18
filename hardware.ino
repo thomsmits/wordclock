@@ -2,14 +2,12 @@
   Functions to handle the hardware of the clock.
 */
 
-#define BIT_ON_DELAY 1 
-#define BIT_OFF_DELAY 1
-
+//#define SCOPE_DELAY 100
 
 // serial signal (PIN 2)
 #define PORT_SER_IN 12
 
-// send to output port
+// send to output port (IN 8)
 #define PORT_OUTPUT_ENABLE 8
 
 // clear buffer (PIN 7)
@@ -20,10 +18,6 @@
 
 // clock for register (PIN 10)
 #define PORT_RCK 10
-
-// enable output (PIN 8)
-#define PORT_OUTPUT_ENABLE 8
-
 
 #define PORT_SPEAKER 9
 #define PORT_BUTTON1 2
@@ -46,6 +40,15 @@ void hardware_initialize() {
 }
 
 
+void write_to_port(int port, int signal) {
+  
+  digitalWrite(port, signal);
+  
+  #ifdef SCOPE_DELAY
+  delayMicroseconds(SCOPE_DELAY);
+  #endif 
+}
+
 /**
  Sents the given bit patternto the shift registers
  connected to pin PORT_SIGNAL.
@@ -53,33 +56,45 @@ void hardware_initialize() {
  @param ledBits the bit pattern to be sent
 */
 void send_to_shift_registers(const int bitPattern[]) {
-
-  digitalWrite(PORT_OUTPUT_ENABLE, HIGH);
-  digitalWrite(PORT_CLEAR, HIGH);
-  digitalWrite(PORT_SRCK, LOW);
+  
+  // ensure PORT_RCK is off to avoid flickering during
+  // shift operation
+  write_to_port(PORT_RCK, LOW);
+  
+  // clear all shift registers
+  write_to_port(PORT_CLEAR, LOW);
+  write_to_port(PORT_CLEAR, HIGH);
+  
+  // enable transfer of data to next shift register
+  // turn of drains
+  write_to_port(PORT_OUTPUT_ENABLE, HIGH);
+  
+  // ensure that clock is low
+  write_to_port(PORT_SRCK, LOW);
   
   for (int i = 0; i < NUMBER_OF_LEDS; i++) {
     
-    digitalWrite(PORT_SRCK, LOW);
-    
     if (bitPattern[i] == 1) {
-      digitalWrite(PORT_SER_IN, HIGH);
+      write_to_port(PORT_SER_IN, HIGH);
     }
     else {
-      digitalWrite(PORT_SER_IN, LOW);
+      write_to_port(PORT_SER_IN, LOW);
     }
-    
-    //delayMicroseconds(BIT_ON_DELAY);
-    digitalWrite(PORT_SRCK, HIGH);
-    //delayMicroseconds(BIT_OFF_DELAY);
+   
+    // data is taken from PORT_SER_IN on up flank of
+    // PORT_SRCK, therefore trigger PORT_SRCK to transfer bit of
+    // PORT_SER_IN to shift register
+    write_to_port(PORT_SRCK, HIGH);
+    write_to_port(PORT_SRCK, LOW);
   }    
   
-  digitalWrite(PORT_RCK, HIGH);
-  //delayMicroseconds(BIT_ON_DELAY);
-  digitalWrite(PORT_RCK, LOW);
-  //delayMicroseconds(BIT_OFF_DELAY);
+  //  trigger PORT_RCK to transfer data from shift registers
+  // into the output buffer
+  write_to_port(PORT_RCK, HIGH);
+  write_to_port(PORT_RCK, LOW);
   
-  Serial.print("Output Done");
+  // turn on drains
+  write_to_port(PORT_OUTPUT_ENABLE, LOW);
 }
 
 /**
@@ -106,7 +121,7 @@ void set_brightness(const int value) {
 int get_ambient_brightness() {
   int value = analogRead(A0);
   
-  int scaledValue = (double) value / NO_AMBIENT_LIGHT * 255.0;
+  int scaledValue = (double) (value - FULL_AMBIENT_LIGHT) / NO_AMBIENT_LIGHT * 255.0;
  
   // ensure that the value does never exceed 255 even if the
   // analog in port delivers a value greater than NO_AMBIENT_LIGHT

@@ -2,7 +2,7 @@
  Displaying information on the LED panel.
 */
 
-#define NUMBER_OF_LEDS 111
+#define NUMBER_OF_LEDS 14*8
 
 
 // Position of the LEDs

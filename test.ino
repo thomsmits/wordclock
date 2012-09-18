@@ -173,9 +173,44 @@ void test_pwm() {
 */
 }
   
+void test_runlight() {
+  
+  int ledBits[NUMBER_OF_LEDS];
+    
+  for (int i = 0; i < NUMBER_OF_LEDS; i++) {
+    ledBits[i] = 1;
+    send_to_shift_registers(ledBits);
+    delay(100);
+    ledBits[i] = 0;
+  }
+}
+
+void test_single_led() {
+  int ledBits[NUMBER_OF_LEDS];
+  ledBits[NUMBER_OF_LEDS - 1] = 1;  
+  send_to_shift_registers(ledBits);
+}
+
 void test_shift_register() {
   int ledBits[NUMBER_OF_LEDS];
   
+  for (int i = 0; i < NUMBER_OF_LEDS; i += 1) {
+    ledBits[i] = 1;
+  }
+  
+  send_to_shift_registers(ledBits);
+  /*
+  delay(1000);
+ 
+  for (int i = 0; i < NUMBER_OF_LEDS; i++) {
+    ledBits[NUMBER_OF_LEDS] = 0;
+  }
+  
+  send_to_shift_registers(ledBits);
+  
+  delay(1000);
+ */
+  /*
   ledBits[NUMBER_OF_LEDS - 1] = 1;  
   send_to_shift_registers(ledBits);
   
@@ -184,6 +219,7 @@ void test_shift_register() {
   
   ledBits[NUMBER_OF_LEDS - 3] = 0;  
   send_to_shift_registers(ledBits);
+ */
  /* 
   for (int i = 1; i < 10; i++) {
     ledBits[NUMBER_OF_LEDS - i] = 1;  
@@ -239,4 +275,40 @@ void test_shift_register() {
   ledBits[NUMBER_OF_LEDS - 1] = 0;  
   send_to_shift_registers(ledBits);
 */
+}
+
+
+void test_new_board_odd() {
+  int ledBits1[NUMBER_OF_LEDS];
+  
+  for (int i = 0; i < NUMBER_OF_LEDS; i += 2) {
+    ledBits1[i] = 1;
+  }
+  send_to_shift_registers(ledBits1);
+
+  Serial.print("Ungerade LEDs an!\n");
+}
+
+void test_new_board_even() {
+
+  int ledBits2[NUMBER_OF_LEDS];
+  for (int i = 1; i < NUMBER_OF_LEDS; i += 2) {
+    ledBits2[i] = 1;
+  }
+  send_to_shift_registers(ledBits2);
+ 
+  Serial.print("Gerade LEDs an!\n");
+}
+
+void test_new_board_all() {
+
+  int ledBits[NUMBER_OF_LEDS];
+  for (int i = 0; i < NUMBER_OF_LEDS; i++) {
+    ledBits[i] = 1;
+  }
+  send_to_shift_registers(ledBits);
+ 
+  Serial.print("Alle LEDs an!\n");
+  
+  delay(15000); 
 }
