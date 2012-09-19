@@ -2,7 +2,7 @@
   DCF clock functions.
 */
 #include <DCF77.h>
-#define PORT_DCF 3
+#define PORT_DCF 7
 
 /** Arduino timestamp at last DCF update */
 static unsigned long millis_at_last_dcf;
@@ -20,7 +20,6 @@ unsigned long get_millis_at_last_dcf() {
   return millis_at_last_dcf;
 }
 
-
 /**
   Return timestamp deliverd by DCF clock at last update.
 */
@@ -28,14 +27,12 @@ unsigned long get_dcf_millis() {
   return dcf_millis;
 }
 
-
 /**
   Get the current DCF time from the DCF clock and
   update corresponding global variables.
 */
 void acquire_dcf_time() {
-
-   
+  // TODO: commented out until the clock is attached to the board
   /*
   int DCFsignal = myDCF.scanSignal();
   
@@ -58,7 +55,6 @@ void acquire_dcf_time() {
   }
   */
 }
-
 
 /**
   Manually set the DCF time (for testing purpose).
@@ -86,7 +82,5 @@ void read_current_time(int* hour, int* minute, int* second) {
   
   millis_to_time(currentMillis, hour, minute, second);  
 }
-
-
 
 

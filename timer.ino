@@ -1,3 +1,10 @@
+/*
+ Functions for a primitive timer handling.
+ 
+ THIS MODULE IS FAR FROM BEING FINISHED AND
+ IS EXPERIMENTAL
+*/
+
 /**
   Function that should be executed periodically
   to ensure instant reaction of the clock to

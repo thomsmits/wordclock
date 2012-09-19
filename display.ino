@@ -2,10 +2,16 @@
  Displaying information on the LED panel.
 */
 
-#define NUMBER_OF_LEDS 14*8
-
-
-// Position of the LEDs
+/**
+  Positions of the text on the LED panel.
+  
+  As the Arduino programming language cannot determine
+  the length of an array that is passed to a function
+  as a pointer, a -1 at the end of the array indicates the
+  end of the array.
+  
+  The values of the array have to be <= NUMBER_OF_LEDS - 1.
+*/
 const int ES[]      = { 0, 1, -1 };
 const int IST[]     = { 3, 4, 5, -1 };
 const int FUENF_M[] = { 7, 8, 9, 10};
@@ -32,19 +38,24 @@ const int UHR[]     = { 105, 106, 107, -1 };
 const int PM[]      = { 109, -1 };
 const int WECKER[]  = { 110, -1 };
 
+
 /** 
  Sets the bits in resultArray depending on the values of the 
  arrayToAdd. Bits already set in the input array will not
  be set to zero.
  
+ WARNING: this function does not perform any bounds checks!
+ 
  @param arrayToAdd Array containing the bits to be set as 
         index of the bit. The value 5 for example implies
         that the 6th bit in the resultArray has to be set to 1.
+        This array has to be terminated by -1.
  
  @param (out) ledBits Array where the bits will be set according
-        to the input array. 
+        to the input array. The ledBits has to be big enough to
+        accomodate the indices provided in arrayToAdd.
 */        
-static void compose(const int arrayToAdd[], int* ledBits) {
+static void compose(const int arrayToAdd[], int ledBits[]) {
   int pos;
   int i = 0;
     
@@ -52,7 +63,6 @@ static void compose(const int arrayToAdd[], int* ledBits) {
     ledBits[pos] = 1;
   }
 }
-
 
 /**
  Sets the hour information for the clock.
@@ -187,6 +197,4 @@ void display_time(const int hour, const int minute, int ledBits[]) {
   
   display_hour(hourToBeSet, ledBits);
 }
-
-
 

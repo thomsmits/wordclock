@@ -60,6 +60,7 @@ boolean stop_sound = false;
 void beep() {
   play_melody(BEEP_MELODY, BEEP_BEATS);
 }
+
 /**
   Play a single tone.
   

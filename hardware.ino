@@ -2,27 +2,41 @@
   Functions to handle the hardware of the clock.
 */
 
-//#define SCOPE_DELAY 100
-
-// serial signal (PIN 2)
-#define PORT_SER_IN 12
-
-// send to output port (IN 8)
-#define PORT_OUTPUT_ENABLE 8
-
-// clear buffer (PIN 7)
-#define PORT_CLEAR 7
+// delay for signal tracing with an 
+// (slow) oscilloscope. Comment in to activate
+//#define SCOPE_DELAY 10000
 
 // clock for shift register port (PIN 15)
-#define PORT_SRCK 11
+#define PORT_SRCK 2
+
+// serial signal (PIN 2)
+#define PORT_SER_IN 3
 
 // clock for register (PIN 10)
-#define PORT_RCK 10
+#define PORT_RCK 4
 
+// clear buffer (PIN 7)
+#define PORT_CLEAR 5
+
+// send to output port (IN 8)
+#define PORT_OUTPUT_ENABLE 6
+
+// piezzo speaker
 #define PORT_SPEAKER 9
-#define PORT_BUTTON1 2
 
+// on-board LED of Arduino
 #define PORT_LED 13
+
+// button number one
+#define PORT_BUTTON1 10
+
+// Measurement of the photo resistor for maximum
+// light
+#define FULL_AMBIENT_LIGHT 0
+
+// Measurement of the photo resistor for complete
+// darkness
+#define NO_AMBIENT_LIGHT 700.0
 
 /**
   Initialize hardware.
@@ -34,67 +48,138 @@ void hardware_initialize() {
   pinMode(PORT_SRCK, OUTPUT);
   pinMode(PORT_RCK, OUTPUT);
   pinMode(PORT_SPEAKER, OUTPUT);
-  pinMode(PORT_BUTTON1, INPUT);
   pinMode(PORT_DCF, INPUT);
   pinMode(PORT_LED, OUTPUT);
-}
-
-
-void write_to_port(int port, int signal) {
-  
-  digitalWrite(port, signal);
-  
-  #ifdef SCOPE_DELAY
-  delayMicroseconds(SCOPE_DELAY);
-  #endif 
+ 
+  // disable output of shift-registers
+  // (inverted signal): HIGH => off
+  high(PORT_OUTPUT_ENABLE);
 }
 
 /**
- Sents the given bit patternto the shift registers
- connected to pin PORT_SIGNAL.
- 
- @param ledBits the bit pattern to be sent
+  Set the given port to potential HIGH.
+  
+  @param port the port to set
 */
-void send_to_shift_registers(const int bitPattern[]) {
+void high(int port) {
   
-  // ensure PORT_RCK is off to avoid flickering during
-  // shift operation
-  write_to_port(PORT_RCK, LOW);
+  digitalWrite(port, HIGH);
+
+  #ifdef SCOPE_DELAY
+  delayMicroseconds(SCOPE_DELAY);
+  #endif 
   
-  // clear all shift registers
-  write_to_port(PORT_CLEAR, LOW);
-  write_to_port(PORT_CLEAR, HIGH);
+}
+
+/**
+  Set the given port to potential LOW.
   
-  // enable transfer of data to next shift register
-  // turn of drains
-  write_to_port(PORT_OUTPUT_ENABLE, HIGH);
+  @param port the port to set
+*/
+void low(int port) {
   
-  // ensure that clock is low
-  write_to_port(PORT_SRCK, LOW);
+  digitalWrite(port, LOW);
+
+  #ifdef SCOPE_DELAY
+  delayMicroseconds(SCOPE_DELAY);
+  #endif 
+  
+}
+
+/**
+ Sends the given bit pattern to the shift registers
+ connected to the arduino. 
+ 
+ The shift register chips have the following schematic
+ design:
+                                      | OUTPUT_ENABLED
+         +----------+   +----------+  |  
+ INPUT --|  shift   |---| storage  |--&-- DRAIN
+         | register |   | register |  |
+         +----------+   +----------+  |
+              |                       |
+       +------+ OUTPUT                |
+       |                              | 
+       | +----------+   +----------+  | 
+ INPUT +-|  shift   |---| storage  |--&-- DRAIN
+         | register |   | register |
+         +----------+   +----------+
+              |
+             ... 
+ 
+ INPUT:  SER_IN, SRCK, RCK, CLEAR
+ DRAIN:  LED connection
+ OUTPUT: Bit output of the chip connected to SER_IN of 
+         the next chip 
+ OUTPUT_ENABLED: control whether content of storage regsiter
+         is visible on DRAIN or not
+ 
+ The protocoll to talk with the shift registers is as
+ follows:
+ 
+ 1. Set SER_IN to the desired bit value (HIGH or LOW).
+ 2. Trigger a clock signal on SRCK (LOW -> HIGH -> LOW).
+ 3. The bit is stored in the shift register and the last
+    bit of the register is shifted to the output port
+    
+    E.g. The register contains the value 10101101, now a 
+    1 is moved into the register with the above protocol.
+    After this step, the register contains the value
+    11010110 and the output port as the value 1. If now 
+    another 1 is moved into the register, it has the value
+    11101011 and the output port is 0.
+ 
+ Repeat steps 1. and 2. until all the bits are send to
+ the shift register chain.
+ 
+ Now all the desired bits are in the shift registers of the chip
+ chain (first stage of the chip).
+ 
+ 4. By triggering the RCK clock (LOW -> HIGH -> LOW), the values of
+    the first stage are moved into the second stage of the chip.
+ 
+ Whether the data is directly send to the output of the chips
+ connected to (DRAIN) or not depends on the signal: OUTPUT_ENABLE.
+ If OUTPUT_ENABLE is HIGH, the drains are turned off, if it is
+ LOW, the bits from the register part are sent to the DRAIN port.
+ 
+ @param ledBits the bit pattern to be sent. The length of the array 
+        has to be as defined in NUMBER_OF_LEDS. No bounds check performed!
+*/
+void send_to_shift_registers(const int ledBits[]) {
+
+  // stop clearing data by setting inverted clear port
+  // to HIGH -> clear is OFF
+  high(PORT_CLEAR);
   
   for (int i = 0; i < NUMBER_OF_LEDS; i++) {
     
-    if (bitPattern[i] == 1) {
-      write_to_port(PORT_SER_IN, HIGH);
+    // set PORT_SER_IN according  to the data in the array
+    if (ledBits[i] == 1) {
+      high(PORT_SER_IN);
     }
     else {
-      write_to_port(PORT_SER_IN, LOW);
+      low(PORT_SER_IN);
     }
-   
-    // data is taken from PORT_SER_IN on up flank of
-    // PORT_SRCK, therefore trigger PORT_SRCK to transfer bit of
-    // PORT_SER_IN to shift register
-    write_to_port(PORT_SRCK, HIGH);
-    write_to_port(PORT_SRCK, LOW);
-  }    
   
-  //  trigger PORT_RCK to transfer data from shift registers
-  // into the output buffer
-  write_to_port(PORT_RCK, HIGH);
-  write_to_port(PORT_RCK, LOW);
+    // trigger clock to move data from SER_IN into the
+    // the chip  
+    high(PORT_SRCK);
+    low(PORT_SRCK);
+    
+    low(PORT_SER_IN);
+  }
   
-  // turn on drains
-  write_to_port(PORT_OUTPUT_ENABLE, LOW);
+  // ensure that input port is low (to ease debugging)
+  low(PORT_SER_IN);
+  
+  // trigger register clock to move data into the
+  // register part of the chip
+  high(PORT_RCK);
+  low(PORT_RCK);
+  
+  // enable output and display result
+  low(PORT_OUTPUT_ENABLE);
 }
 
 /**
@@ -107,10 +192,6 @@ void set_brightness(const int value) {
   int pwm = 255 - value;
   analogWrite(PORT_OUTPUT_ENABLE, pwm);
 }
-
-
-#define FULL_AMBIENT_LIGHT 0
-#define NO_AMBIENT_LIGHT 700.0
 
 /**
   Get the ambient brightness (of the room).
@@ -131,3 +212,25 @@ int get_ambient_brightness() {
   
   return scaledValue;
 }
+
+/**
+ Fill the given array with the given value.
+ 
+ As the Ardunio programming language does not initialize
+ arrays on the stack with a value, all arrays dynamically
+ created need to be filled with a default value manually.
+ Use this function to perform this.
+ 
+ @param array (out) the array to be filled
+ @param length the length of the array
+ @param value the value to fill array with
+*/
+void memfill(int array[], const int length, const int value) {
+  for (int i = 0; i < length; i++) {
+    array[i] = value;
+  }
+}
+
+
+ 
+

@@ -7,7 +7,6 @@
 #define MILLIS_PER_MINUTE (60L*1000)
 #define MILLIS_PER_SECOND (1000L)
 
-
 /**
   Convert hour, minute and second to timestamp.
   
@@ -21,7 +20,6 @@ void time_to_millis(int hour, int minute, int second, unsigned long* timestamp) 
       + minute * MILLIS_PER_MINUTE
       + second * MILLIS_PER_SECOND;
 }
-
 
 /**
   Convert timestamp to hour, minute, second.
@@ -50,7 +48,6 @@ void millis_to_time(unsigned long timestamp, int* hour, int* minute, int* second
   
   *second = timestamp / MILLIS_PER_SECOND;
 }
-
 
 /**
   Manage time wrap around on hour and minute.

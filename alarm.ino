@@ -27,7 +27,6 @@ void alarm_time_increment() {
   time_wrap(&alarm_hour, &alarm_minute);
 }
 
-
 /**
   Increments the alarm time by ALARM_STEPS_FAST minutes.
   Wrap-around is handled by this function.
