@@ -33,7 +33,7 @@ unsigned long get_dcf_millis() {
 */
 void acquire_dcf_time() {
   // TODO: commented out until the clock is attached to the board
-  /*
+  
   int DCFsignal = myDCF.scanSignal();
   
   if (DCFsignal) {
@@ -50,10 +50,10 @@ void acquire_dcf_time() {
     }
   }
   else {
-    Serial.print("No Signal!");
+    tracenl("No Signal!");
     digitalWrite(13, LOW);
   }
-  */
+  
 }
 
 /**

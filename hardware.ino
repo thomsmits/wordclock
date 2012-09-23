@@ -22,13 +22,25 @@
 #define PORT_OUTPUT_ENABLE 6
 
 // piezzo speaker
-#define PORT_SPEAKER 9
+#define PORT_SPEAKER 11
 
 // on-board LED of Arduino
 #define PORT_LED 13
 
 // button number one
-#define PORT_BUTTON1 10
+#define PORT_BUTTON1 8
+
+// button number two
+#define PORT_BUTTON2 9
+
+// button number three
+#define PORT_BUTTON3 10
+
+// button number four
+#define PORT_BUTTON4 12
+
+// light sensor port
+#define PORT_LIGHT_SENSOR A0
 
 // Measurement of the photo resistor for maximum
 // light
@@ -36,7 +48,7 @@
 
 // Measurement of the photo resistor for complete
 // darkness
-#define NO_AMBIENT_LIGHT 700.0
+#define NO_AMBIENT_LIGHT 1000.0
 
 /**
   Initialize hardware.
@@ -152,7 +164,7 @@ void send_to_shift_registers(const int ledBits[]) {
   // to HIGH -> clear is OFF
   high(PORT_CLEAR);
   
-  for (int i = 0; i < NUMBER_OF_LEDS; i++) {
+  for (int i = NUMBER_OF_LEDS -1; i >= 0; i--) {
     
     // set PORT_SER_IN according  to the data in the array
     if (ledBits[i] == 1) {
@@ -179,7 +191,7 @@ void send_to_shift_registers(const int ledBits[]) {
   low(PORT_RCK);
   
   // enable output and display result
-  low(PORT_OUTPUT_ENABLE);
+  //low(PORT_OUTPUT_ENABLE);
 }
 
 /**
@@ -200,10 +212,16 @@ void set_brightness(const int value) {
   @return 0 indicates complete darkness
 */
 int get_ambient_brightness() {
-  int value = analogRead(A0);
+  int value = analogRead(PORT_LIGHT_SENSOR);
+  
+  trace("get_ambient_brightness: value=");
+  trace(value);
   
   int scaledValue = (double) (value - FULL_AMBIENT_LIGHT) / NO_AMBIENT_LIGHT * 255.0;
  
+  trace(", scaledValue=");
+  tracenl(scaledValue);
+  
   // ensure that the value does never exceed 255 even if the
   // analog in port delivers a value greater than NO_AMBIENT_LIGHT
   if (scaledValue > 255) {
@@ -229,6 +247,49 @@ void memfill(int array[], const int length, const int value) {
   for (int i = 0; i < length; i++) {
     array[i] = value;
   }
+}
+
+/**
+  Poll the state of the buttons on the clock. 
+  1 indicates pressed, 0 indicates not pressed.
+  
+  The function performs a basic debouncing of the button.
+  
+  @param (out) button1 button 
+  @param (out) button2 button 
+  @param (out) button3 button 
+  @param (out) button4 button 
+*/
+void poll_buttons(int *button1, int *button2, int *button3, int *button4) {
+
+  int btn1a = digitalRead(PORT_BUTTON1);
+  int btn2a = digitalRead(PORT_BUTTON2);
+  int btn3a = digitalRead(PORT_BUTTON3);
+  int btn4a = digitalRead(PORT_BUTTON4);
+  
+  // delay and read button state again to perform
+  // a basic debouncing
+  delay(10);
+  
+  int btn1b = digitalRead(PORT_BUTTON1);
+  int btn2b = digitalRead(PORT_BUTTON2);
+  int btn3b = digitalRead(PORT_BUTTON3);
+  int btn4b = digitalRead(PORT_BUTTON4);
+  
+  *button1 = (btn1a == 1) && (btn1b == 1);
+  *button2 = (btn2a == 1) && (btn2b == 1);
+  *button3 = (btn3a == 1) && (btn3b == 1);
+  *button4 = (btn4a == 1) && (btn4b == 1);
+ /* 
+  trace("poll_buttons: btn1=");
+  trace(*button1);
+  trace(", btn2=");
+  trace(*button2);
+  trace(", btn3=");
+  trace(*button3);
+  trace(", btn4=");
+  tracenl(*button4);
+  */
 }
 
 

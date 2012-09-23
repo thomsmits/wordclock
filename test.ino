@@ -11,12 +11,12 @@
   @param second second
 */  
 static void dbg_output_time(int hour, int minute, int second) {
-  Serial.print(hour);
-  Serial.print(":");
-  Serial.print(minute);
-  Serial.print(":");
-  Serial.print(second);
-  Serial.print("\n");
+  trace(hour);
+  trace(":");
+  trace(minute);
+  trace(":");
+  trace(second);
+  trace("\n");
 }
 
 /**
@@ -25,6 +25,7 @@ static void dbg_output_time(int hour, int minute, int second) {
 static void test_display() {
   
   int ledBits[NUMBER_OF_LEDS];
+  memfill(ledBits, NUMBER_OF_LEDS, 0);
   int hour;
   int minute;
   int second;
@@ -36,6 +37,7 @@ static void test_display() {
     display_time(hour, minute, ledBits);
     send_to_shift_registers(ledBits);
     dbg_output_time(hour, minute, second);
+    delay(2000);
   }
   
   // test hour display
@@ -43,10 +45,10 @@ static void test_display() {
     set_dcf_time(hour, 15, 0);
     read_current_time(&hour, &minute, &second);
     display_time(hour, minute, ledBits);
+    send_to_shift_registers(ledBits);
     dbg_output_time(hour, minute, second);
+    delay(2000);
   }
-  
-  alarm_time_increment();
 }
 
 /**

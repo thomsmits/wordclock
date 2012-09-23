@@ -51,8 +51,6 @@ const int pause = 1000;
    which has to be added to the duration of the note. */
 const int rest_count = 100; 
 
-/** User has cancelled sound playing */
-boolean stop_sound = false;
 
 /** 
   Beep 
@@ -107,17 +105,13 @@ void play_tone(const int toneToPlay, const long duration) {
 void loop_melody(const int melody[], const int beats[], const int repeat, const long pause) {
   for (int i = 0; i < repeat; i++) {
     play_melody(melody, beats);
-    update();
-    if (stop_sound) {
+    if (stop_sound()) {
       break;
     }
     
     delay(pause);
   }
-  
-  stop_sound = false;
 }
-
 
 /**
   Play a melody.
@@ -135,13 +129,18 @@ void play_melody(const int melody[], const int beats[]) {
 
     play_tone(toneToPlay, duration); 
 
-    update();
-    if (stop_sound) {
+    if (stop_sound()) {
       break;
     }
     
     delayMicroseconds(pause);
   }
-  
-  stop_sound = false;
+}
+
+/**
+  Melody for the alarm sound.
+*/
+void alarm_melody() {
+  loop_melody(BEEP_MELODY, BEEP_BEATS, 10, 500);
+  //loop_melody(SMB_MELODY, SMB_BEATS, 2, 500);
 }
