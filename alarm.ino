@@ -53,6 +53,7 @@ boolean stop_alarm_sound() {
   Check whether the alarm button was pressed.
 */
 void check_alarm_toggle() {
+  
   int btn1, btn2, btn3, btn4;
   poll_buttons(&btn1, &btn2, &btn3, &btn4);
 
@@ -192,6 +193,8 @@ void check_alarm() {
 /**
   Indicates whether the user has requested to stop
   playing the alarm by pressing any button.
+  
+  @return true if any button was pressed, otherwise false.
 */
 boolean stop_sound() {
   int btn1, btn2, btn3, btn4;

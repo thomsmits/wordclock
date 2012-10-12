@@ -2,7 +2,7 @@
   DCF clock functions.
 */
 #include <DCF77.h>
-#define PORT_DCF 7
+#include "ports.h"
 
 /** Arduino timestamp at last DCF update */
 static unsigned long millis_at_last_dcf;

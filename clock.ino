@@ -106,5 +106,3 @@ void loop(){
   loopCounter++; // wraparound intended
 }
 
-
-
