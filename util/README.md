@@ -1,0 +1,1 @@
+This directory contains utility files, which are not intended to be executed on the Arduino.

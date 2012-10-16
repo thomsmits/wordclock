@@ -194,3 +194,24 @@ void test_all_led_off() {
 }
 
 
+void test_font_display() {
+
+  int ledBits[NUMBER_OF_LEDS];
+
+  for (int i = 0; i < 10; i++) {
+    memfill(ledBits, NUMBER_OF_LEDS, 0);
+    print_char_8x8(ledBits, 0, 0, '0' + i);
+    send_to_shift_registers(ledBits);
+    delay(500);
+  }
+  
+  for (int i = 0; i < 27; i++) {
+    memfill(ledBits, NUMBER_OF_LEDS, 0);
+    print_char_8x8(ledBits, 0, 0, 'A' + i);
+    send_to_shift_registers(ledBits);
+    delay(500);
+  }
+  
+  
+}
+

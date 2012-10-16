@@ -7,6 +7,13 @@
   shift register cascade. */  
 #define NUMBER_OF_LEDS 14*8
 
+/**
+  Number of LEDs in one row */ 
+#define LED_COLUMNS 11
+
+/** Number of rows */
+#define LED_ROWS 10
+
 /** Enable debug output */
 #define DEBUG_OUTPUT 1
 
@@ -76,7 +83,7 @@ void setup() {
  milliseconds. 
 */
 void loop(){ 
-
+  
   static unsigned long loopCounter;
    
   if (loopCounter % LOOP_CLOCK == 0) {
