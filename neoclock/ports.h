@@ -1,6 +1,6 @@
 /*
-  Definition of the ports used by the word clock.
-*/
+ * Definition of the ports used by the word clock.
+ */
 
 #ifndef __ports_h
 #define __ports_h

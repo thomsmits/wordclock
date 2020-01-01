@@ -2,7 +2,10 @@
  * Functions to handle real time clock attached to micro controller.
 */
 #include <Wire.h>
+#include <stdint.h>
 #include "ports.h"
+
+#include "rtc.h"
 
 /* I2C Adresse of RTC  DS3231 */
 #define RTC_I2C_ADDRESS 0x68
@@ -20,7 +23,7 @@ void clock_initialize() {
  * @param val the decimal value to convert
  * @return the corresponding BCD value
  */
-uint8_t decToBcd(uint8_t val) {
+static uint8_t dec_to_bcd(uint8_t val) {
   return ((val / 10 * 16) + (val % 10));
 }
 
@@ -30,7 +33,7 @@ uint8_t decToBcd(uint8_t val) {
  * @param val the BCD value to convert
  * @return the corresponding decimal value
  */
-uint8_t bcdToDec(uint8_t val) {
+static uint8_t bcd_to_dec(uint8_t val) {
    return (uint8_t) ((val / 16 * 10) + (val % 16));
 }
 
@@ -45,17 +48,16 @@ uint8_t bcdToDec(uint8_t val) {
  * @param month month
  * @param year year
  */
-static void set_rtc_time_internal(byte hour, byte minute, byte second, byte dayOfWeek, byte
-dayOfMonth, byte month, byte year) {
+static void set_rtc_time_internal(byte hour, byte minute, byte second, byte dayOfWeek, byte dayOfMonth, byte month, byte year) {
   Wire.beginTransmission(RTC_I2C_ADDRESS);
   Wire.write(0); /* set next input to start at the seconds register */
-  Wire.write(decToBcd(second)); /* set seconds */
-  Wire.write(decToBcd(minute)); /* set minutes */
-  Wire.write(decToBcd(hour)); /* set hours */
-  Wire.write(decToBcd(dayOfWeek)); /* set day of week (1=Sunday, 7=Saturday) */
-  Wire.write(decToBcd(dayOfMonth)); /* set date (1 to 31) */
-  Wire.write(decToBcd(month)); /* set month */
-  Wire.write(decToBcd(year)); /* set year (0 to 99) */
+  Wire.write(dec_to_bcd(second)); /* set seconds */
+  Wire.write(dec_to_bcd(minute)); /* set minutes */
+  Wire.write(dec_to_bcd(hour)); /* set hours */
+  Wire.write(dec_to_bcd(dayOfWeek)); /* set day of week (1=Sunday, 7=Saturday) */
+  Wire.write(dec_to_bcd(dayOfMonth)); /* set date (1 to 31) */
+  Wire.write(dec_to_bcd(month)); /* set month */
+  Wire.write(dec_to_bcd(year)); /* set year (0 to 99) */
   Wire.endTransmission();
 }
 
@@ -73,9 +75,9 @@ void read_current_time(int* hour, int* minute, int* second) {
    Wire.endTransmission();
    Wire.requestFrom(RTC_I2C_ADDRESS, 7);
 
-   *second = bcdToDec(Wire.read() & 0x7f);
-   *minute = bcdToDec(Wire.read());
-   *hour = bcdToDec(Wire.read() & 0x3f);
+   *second = bcd_to_dec(Wire.read() & 0x7f);
+   *minute = bcd_to_dec(Wire.read());
+   *hour = bcd_to_dec(Wire.read() & 0x3f);
 
    trace("Time from RTC: "); trace(*hour); trace(":");
    trace(*minute); trace(":"); tracenl(*second);

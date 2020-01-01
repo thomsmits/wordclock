@@ -2,7 +2,9 @@
  * Test the clock display by showing different texts.
  */
 #include <string.h>
-#include "words.h"
+#include <stdint.h>
+#include "rtc.h"
+#include "hardware.h"
 
 /**
  * Helper function to send a single word to the clock display.

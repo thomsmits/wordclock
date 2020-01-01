@@ -4,55 +4,15 @@
  */
 #include <FastLED.h>
 #include <string.h>
+#include <stdint.h>
+#include <stdbool.h>
 
 #include "ports.h"
 
-/* Value to dim the stripe in general */
-#define DIM 1.0
-
-/* Maximum values for hour and minute */
-#define MAX_HOUR 23
-#define MAX_MINUTE 59
-
-/* Color values */
-typedef struct {
-  int r;
-  int g;
-  int b;
-} Color;
+#include "hardware.h"
 
 /* Initialize data structure for FastLED-Library */
 CRGB leds[NUMBER_OF_LEDS];
-
-/* Color palette to cycle through */
-Color palette[PALETTE_SIZE] = {
-  /* greyscale */
-  { 0xff, 0xff, 0xff },
-  { 0x7f, 0x7f, 0x7f },
-  { 0x3f, 0x3f, 0x3f },
-  { 0x1f, 0x1f, 0x1f },
-  { 0x0f, 0x0f, 0x0f },
-
-  /* orange */
-  { 0xff, 0x8f, 0x00 },
-  { 0xa1, 0x5a, 0x00 },
-  { 0x56, 0x30, 0x00 },
-
-  /* green */
-  { 0x00, 0xff, 0x00 },
-  { 0x00, 0x3f, 0x00 },
-  { 0x00, 0x1f, 0x00 },
-
-  /* blue */
-  { 0x00, 0x65, 0xff },
-  { 0x00, 0x30, 0x79 },
-  { 0x00, 0x19, 0x30 },
-
-  /* red */
-  { 0xff, 0x00, 0x00 },
-  { 0x3f, 0x00, 0x00 },
-  { 0x1f, 0x00, 0x00 },
-};
 
 /* Current color of the clock */
 static Color current_color = palette[0];

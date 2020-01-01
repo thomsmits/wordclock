@@ -1,6 +1,12 @@
 /*
  Main file for the clock control.
 */
+#include <stdint.h>
+
+#include "display.h"
+#include "hardware.h"
+#include "rtc.h"
+
 /** Enable debug output */
 #define DEBUG_OUTPUT 1
 
@@ -13,13 +19,6 @@
 
 /** Trace macros */
 #include "trace.h"
-
-/* Size of the color pallette */
-/* TODO: Move to other file, does not belong here */
-#define PALETTE_SIZE 17
-
-/**Number of LEDs in the Neopixel stripe */
-#define NUMBER_OF_LEDS 130
 
 /** Throttle the loop to an invocation every X milliseconds */
 #define INTERVAL 100

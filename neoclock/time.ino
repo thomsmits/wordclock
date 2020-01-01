@@ -1,10 +1,7 @@
 /*
  * Time management functions.
  */
-#define MILLIS_PER_DAY (24L*60*60*1000)
-#define MILLIS_PER_HOUR (60L*60*1000)
-#define MILLIS_PER_MINUTE (60L*1000)
-#define MILLIS_PER_SECOND (1000L)
+#include "time.h"
 
 /**
  * Convert hour, minute and second to timestamp.

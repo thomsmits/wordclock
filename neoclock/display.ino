@@ -4,7 +4,9 @@
 #include <string.h>
 
 #include "trace.h"
-#include "words.h"
+#include "hardware.h"
+#include "display.h"
+#include "rtc.h"
 
 /**
  * Sets the bits in resultArray depending on the values of the
@@ -124,7 +126,7 @@ static void compose_hour(const int displayHour, const int minute, uint8_t ledBit
   * @param minute the minute to be set
   * @param (out) ledBits bits for the LEDs (will NOT be cleared)
   */
-void display_time(const int hour, const int minute, uint8_t ledBits[]) {
+static void display_time(const int hour, const int minute, uint8_t ledBits[]) {
 
   int roundMinute = (minute / 5) * 5;
   int remainingMinute = minute - roundMinute;
