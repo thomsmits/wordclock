@@ -76,6 +76,9 @@ void loop(){
 #else
   static unsigned long loopCounter;
 
+  /* read light sensor */
+  light_sensor_read();
+
   /* Time update */
   if (loopCounter % LOOP_CLOCK == 0) {
     show_current_time();

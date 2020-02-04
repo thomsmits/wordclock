@@ -20,4 +20,7 @@
 /** port the Neopixel strip is connected to */
 #define PIN_NEOPIXEL 16
 
+/** port the ambient light sensor is connected to */
+#define PIN_LIGHTSENSOR 2  // is connected to D2
+
 #endif
