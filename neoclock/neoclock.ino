@@ -76,8 +76,11 @@ void loop(){
   static unsigned long loopCounter;
 
   /* read light sensor */
-  int ambientLight = get_ambient_brightness();
-  DIM = ambientLight; // set display DIM
+  double dimValue = get_ambient_brightness();
+  if (dimValue < 0.2) {
+    dimValue = 0.2;
+  }
+  DIM = dimValue; // set display DIM
 
   /* Time update */
   if (loopCounter % LOOP_CLOCK == 0) {
