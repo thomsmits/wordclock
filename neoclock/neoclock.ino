@@ -72,7 +72,7 @@ void loop(){
 
 #ifdef TESTMODE
   show_all_words();
-  show_all_times();
+  show_all_times_and_colors();
 #else
   static unsigned long loopCounter;
 
