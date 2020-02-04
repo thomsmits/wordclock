@@ -88,10 +88,14 @@ void send_to_leds(const uint8_t ledBits[]) {
     if (ledBits[i] == 1) {
       /* LED is on */
 
+      trace("LED DIM:") trace(DIM);
+      tracenl("");
+
       /* set pixel to the given color */
       leds[i].r = (int) (current_color.r * DIM);
       leds[i].g = (int) (current_color.g * DIM);
       leds[i].b = (int) (current_color.b * DIM);
+
 
       trace("LED[") trace(i);
       trace("]={"); trace(leds[i].r);
