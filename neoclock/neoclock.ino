@@ -77,8 +77,8 @@ void loop(){
 
   /* read light sensor */
   double dimValue = get_ambient_brightness();
-  if (dimValue < 0.2) {
-    dimValue = 0.2;
+  if (dimValue < 0.01) {
+    dimValue = 0.01;
   }
   DIM = dimValue; // set display DIM
 
