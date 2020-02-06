@@ -36,6 +36,9 @@
 /** Check for changes of the ambient light */
 #define LOOP_AMBIENT_LIGHT_CHANGE (200 / INTERVAL)
 
+/** Minimum value for the dim factor applied to the pixel brightness. */
+#define MINIMUM_DIM_FACTOR 0.01
+
 /**
  * Set this macro if you want to have the south German way
  * of indicating the time with "ES IST VIERTEL ZWOEFL" for 11:15
@@ -82,8 +85,8 @@ void loop(){
   /* read light sensor */
   if (loopCounter % LOOP_AMBIENT_LIGHT_CHANGE == 0) {
     dim = get_ambient_brightness();
-    if (dim < 0.01) {
-      dim = 0.01;
+    if (dim < MINIMUM_DIM_FACTOR) {
+      dim = MINIMUM_DIM_FACTOR;
     }
   }
 
