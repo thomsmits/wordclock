@@ -33,6 +33,9 @@
 /** Check for the hour or minute button */
 #define LOOP_TIME_CHANGE (200 / INTERVAL)
 
+/** Check for changes of the ambient light */
+#define LOOP_AMBIENT_LIGHT_CHANGE (200 / INTERVAL)
+
 /**
  * Set this macro if you want to have the south German way
  * of indicating the time with "ES IST VIERTEL ZWOEFL" for 11:15
@@ -77,11 +80,13 @@ void loop(){
   static unsigned long loopCounter;
 
   /* read light sensor */
-  double dimValue = get_ambient_brightness();
-  if (dimValue < 0.01) {
-    dimValue = 0.01;
+  if (loopCounter % LOOP_AMBIENT_LIGHT_CHANGE == 0) {
+    double dimValue = get_ambient_brightness();
+    if (dimValue < 0.01) {
+      dimValue = 0.01;
+    }
+    DIM = dimValue; // set display DIM
   }
-  DIM = dimValue; // set display DIM
 
   /* Time update */
   if (loopCounter % LOOP_CLOCK == 0) {
