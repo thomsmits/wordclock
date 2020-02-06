@@ -85,7 +85,7 @@ void loop(){
     if (dimValue < 0.01) {
       dimValue = 0.01;
     }
-    DIM = dimValue; // set display DIM
+    dim = dimValue; // set display dim
   }
 
   /* Time update */

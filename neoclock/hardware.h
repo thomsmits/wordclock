@@ -9,7 +9,7 @@
 #define __hardware_h__
 
 /* Value to dim the stripe in general */
-double DIM = 1.0;
+double dim = 1.0;
 
 /* Maximum values for hour and minute */
 #define MAX_HOUR 23
