@@ -4,6 +4,7 @@
 
 #include <stdint.h>
 #include "ports.h"
+#include "ambientlight.h"
 
 /*
  *  D2  ------------+
@@ -14,6 +15,7 @@
  *                  |
  *  3,3V -----------+
  */
+
 
 // Measurement of the photo resistor for maximum
 // light

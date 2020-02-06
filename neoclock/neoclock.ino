@@ -6,6 +6,7 @@
 #include "display.h"
 #include "hardware.h"
 #include "rtc.h"
+#include "ambientlight.h"
 
 /** Enable debug output */
 #define DEBUG_OUTPUT 1
