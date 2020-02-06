@@ -46,9 +46,9 @@ double get_ambient_brightness() {
   double scaledValue;
 
   if (NO_AMBIENT_LIGHT < FULL_AMBIENT_LIGHT) {
-    scaledValue = (double) ( (double)value -  NO_AMBIENT_LIGHT) /  FULL_AMBIENT_LIGHT;
+    scaledValue = (double) ( (double)value - NO_AMBIENT_LIGHT) / FULL_AMBIENT_LIGHT;
   } else {
-    scaledValue = (double) ( (double)value -  FULL_AMBIENT_LIGHT) /  NO_AMBIENT_LIGHT;
+    scaledValue = (double) ( (double)value - FULL_AMBIENT_LIGHT) / NO_AMBIENT_LIGHT;
   }
 
   trace(", scaledValue=");
