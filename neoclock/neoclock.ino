@@ -84,10 +84,7 @@ void loop(){
 
   /* read light sensor */
   if (loopCounter % LOOP_AMBIENT_LIGHT_CHANGE == 0) {
-    dim = get_ambient_brightness();
-    if (dim < MINIMUM_DIM_FACTOR) {
-      dim = MINIMUM_DIM_FACTOR;
-    }
+    dim = max(get_ambient_brightness(), MINIMUM_DIM_FACTOR);
   }
 
   /* Time update */
