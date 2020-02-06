@@ -51,7 +51,6 @@ void setup() {
 
   hardware_initialize();
   clock_initialize();
-
   show_current_time();
 }
 
@@ -75,6 +74,13 @@ void loop(){
   show_all_times_and_colors();
 #else
   static unsigned long loopCounter;
+
+  /* read light sensor */
+  double dimValue = get_ambient_brightness();
+  if (dimValue < 0.01) {
+    dimValue = 0.01;
+  }
+  DIM = dimValue; // set display DIM
 
   /* Time update */
   if (loopCounter % LOOP_CLOCK == 0) {
