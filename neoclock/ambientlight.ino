@@ -52,7 +52,7 @@ double get_ambient_brightness() {
   trace(", scaledValue=");
   tracenl(scaledValue);
 
-  // ensure that the value does never exceed 255 even if the
+  // ensure that the value does never exceed 1.0 even if the
   // analog in port delivers a value greater than NO_AMBIENT_LIGHT
   if (scaledValue > 1) {
     scaledValue = 1;
