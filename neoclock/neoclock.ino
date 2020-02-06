@@ -81,11 +81,10 @@ void loop(){
 
   /* read light sensor */
   if (loopCounter % LOOP_AMBIENT_LIGHT_CHANGE == 0) {
-    double dimValue = get_ambient_brightness();
-    if (dimValue < 0.01) {
-      dimValue = 0.01;
+    dim = get_ambient_brightness();
+    if (dim < 0.01) {
+      dim = 0.01;
     }
-    dim = dimValue; // set display dim
   }
 
   /* Time update */
