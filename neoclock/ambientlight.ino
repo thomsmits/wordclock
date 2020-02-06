@@ -54,8 +54,8 @@ double get_ambient_brightness() {
 
   // ensure that the value does never exceed 1.0 even if the
   // analog in port delivers a value greater than NO_AMBIENT_LIGHT
-  if (scaledValue > 1) {
-    scaledValue = 1;
+  if (scaledValue > 1.0) {
+    scaledValue = 1.0;
   }
 
   return scaledValue;
