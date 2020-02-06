@@ -9,7 +9,7 @@
 #include "ambientlight.h"
 
 /** Enable debug output */
-#define DEBUG_OUTPUT 1
+#define DEBUG_OUTPUT 0
 
 /** Test the clock */
 #undef TESTMODE
