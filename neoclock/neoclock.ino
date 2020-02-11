@@ -84,7 +84,6 @@ void loop(){
   static double newDim;
   static bool alreadyUpdated = false;
 
-  alreadyUpdated = false;
 
   /* read light sensor */
   if (loopCounter % LOOP_AMBIENT_LIGHT_CHANGE == 0) {
