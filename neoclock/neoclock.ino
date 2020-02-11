@@ -118,7 +118,7 @@ void loop(){
   */
 
   /* Time update */
-  if (alreadyUpdated == false && loopCounter % LOOP_CLOCK == 0) {
+  if (!alreadyUpdated && loopCounter % LOOP_CLOCK == 0) {
     show_current_time();
   }
 
