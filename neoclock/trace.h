@@ -2,8 +2,8 @@
  * Macros for tracing.
  */
 
-#ifndef __trace_h
-#define __trace_h
+#ifndef __trace_h__
+#define __trace_h__
 
 /* Trace macro for debugging output */
 #ifdef DEBUG_OUTPUT

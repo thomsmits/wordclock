@@ -2,8 +2,8 @@
  * Definition of the ports used by the word clock.
  */
 
-#ifndef __ports_h
-#define __ports_h
+#ifndef __ports_h__
+#define __ports_h__
 
 /* on-board LED of Arduino */
 #define PORT_LED 13
