@@ -82,47 +82,43 @@ void loop(){
 #else
   static unsigned long loopCounter;
   static double newDim;
-  static bool alreadyUpdated = false;
 
+  bool updateClock = false;
 
   /* read light sensor */
   if (loopCounter % LOOP_AMBIENT_LIGHT_CHANGE == 0) {
     newDim = max(get_ambient_brightness(), MINIMUM_DIM_FACTOR);
     if (newDim != dim) {
       dim += (newDim - dim) * 0.1;
-      show_current_time();
-      alreadyUpdated = true;
+      updateClock = true;
     }
   }
 
   /* color change */
   if (loopCounter % LOOP_COLOR_CYCLE == 0) {
-    if (check_color_change()) {
-      /* color was changed - redraw time */
-      show_current_time();
-      alreadyUpdated = true;
-    }
+    updateClock = check_color_change();
   }
 
   /* time change */
   if (loopCounter % LOOP_TIME_CHANGE == 0) {
-    if (check_time_change()) {
-      /* time was changed - redraw time */
-      show_current_time();
-      alreadyUpdated = true;
-    }
+    updateClock = check_time_change();
   }
 
-  /* add other clock functions here
+  /* add other clock functions here and set
+     updateClock to true if you want your changes
+     to be reflected on the display
      ...
   */
 
   /* Time update */
-  if (!alreadyUpdated && loopCounter % LOOP_CLOCK == 0) {
-    show_current_time();
+  if (loopCounter % LOOP_CLOCK == 0) {
+    updateClock = true;
   }
 
-  
+  /* update clock if anything changed */
+  if (updateClock) {
+    show_current_time();
+  }
 
   delay(INTERVAL);
   loopCounter++; /* wrap-around intended */
