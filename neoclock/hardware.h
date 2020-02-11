@@ -11,6 +11,8 @@
 /* Value to dim the stripe in general */
 double dim = 1.0;
 
+/* We currently have two different layouts for the clock
+   face. See the drawings folder for details.*/
 #define LAYOUT_2012
 #undef LAYOUT_2020
 
@@ -61,9 +63,6 @@ Color palette[PALETTE_SIZE] = {
   { 0x3f, 0x00, 0x00 },
   { 0x1f, 0x00, 0x00 },
 };
-
-
-
 
 /**
   * Positions of the text on the LED stripe.
@@ -141,7 +140,6 @@ Color palette[PALETTE_SIZE] = {
   const uint8_t MIN_3[]       = { 2, 0xff };
   const uint8_t MIN_4[]       = { 3, 0xff };
 #endif
-
 
 /**
  * Cycle through the color palette.
