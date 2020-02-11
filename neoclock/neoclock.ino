@@ -89,7 +89,7 @@ void loop(){
   if (loopCounter % LOOP_AMBIENT_LIGHT_CHANGE == 0) {
     newDim = max(get_ambient_brightness(), MINIMUM_DIM_FACTOR);
     if (newDim != dim) {
-      dim = dim + (newDim-dim) * 0.1;
+      dim += (newDim - dim) * 0.1;
       show_current_time();
       alreadyUpdated = true;
     }
