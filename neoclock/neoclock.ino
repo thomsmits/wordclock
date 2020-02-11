@@ -81,15 +81,18 @@ void loop(){
   show_all_times_and_colors();
 #else
   static unsigned long loopCounter;
+  static double newDim;
+  static bool alreadyUpdated = false;
+
 
   /* read light sensor */
   if (loopCounter % LOOP_AMBIENT_LIGHT_CHANGE == 0) {
-    dim = max(get_ambient_brightness(), MINIMUM_DIM_FACTOR);
-  }
-
-  /* Time update */
-  if (loopCounter % LOOP_CLOCK == 0) {
-    show_current_time();
+    newDim = max(get_ambient_brightness(), MINIMUM_DIM_FACTOR);
+    if (newDim != dim) {
+      dim += (newDim - dim) * 0.1;
+      show_current_time();
+      alreadyUpdated = true;
+    }
   }
 
   /* color change */
@@ -97,6 +100,7 @@ void loop(){
     if (check_color_change()) {
       /* color was changed - redraw time */
       show_current_time();
+      alreadyUpdated = true;
     }
   }
 
@@ -105,12 +109,20 @@ void loop(){
     if (check_time_change()) {
       /* time was changed - redraw time */
       show_current_time();
+      alreadyUpdated = true;
     }
   }
 
   /* add other clock functions here
      ...
   */
+
+  /* Time update */
+  if (!alreadyUpdated && loopCounter % LOOP_CLOCK == 0) {
+    show_current_time();
+  }
+
+  
 
   delay(INTERVAL);
   loopCounter++; /* wrap-around intended */
