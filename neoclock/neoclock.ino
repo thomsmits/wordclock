@@ -82,7 +82,7 @@ void loop(){
 #else
   static unsigned long loopCounter;
   static double newDim;
-  static bool alreadyUpdated;
+  static bool alreadyUpdated = false;
 
   alreadyUpdated = false;
 
