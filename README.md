@@ -18,6 +18,8 @@ Due to several limitations of the first version, we developed a second version t
 
 <img src="img/clock_2.jpg" width="200" title="Neopixel-Based clock, thanks to Daniel for the picture">
 
+The design allows for placing the whole clock into a cheap IKEA picture frame. Details and assembly instructions can be found [here](https://blog.springwald.de/post/2020/Wortwecker-2_0).
+
 The source code and other material for this clock can be found in the directory [neopixel-clock](neopixel-clock).
 
 ---
